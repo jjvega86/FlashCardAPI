@@ -1,0 +1,19 @@
+{
+  "name": "flashcardapi",
+  "version": "1.0.0",
+  "description": "API to store and manage collections of FlashCards",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjvega86/FlashCardAPI.git"
+  },
+  "author": "JJ Vega",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jjvega86/FlashCardAPI/issues"
+  },
+  "homepage": "https://github.com/jjvega86/FlashCardAPI#readme"
+}
