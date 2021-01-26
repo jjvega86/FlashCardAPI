@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jjvega86/FlashCardAPI/issues"
   },
-  "homepage": "https://github.com/jjvega86/FlashCardAPI#readme"
+  "homepage": "https://github.com/jjvega86/FlashCardAPI#readme",
+  "dependencies": {
+    "mongoose": "^5.11.13"
+  }
 }
