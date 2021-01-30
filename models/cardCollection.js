@@ -13,6 +13,7 @@ const cardSchema = new mongoose.Schema({
 
 const cardCollectionSchema = new mongoose.Schema({
     title: {type: String, required: true, minlength: 2, maxLength: 30 },
+    dateLastModified: {type: Date, default: Date.now},
     cards: [cardSchema] // allows for an array of cards in each collection
 });
 
@@ -28,8 +29,17 @@ function validateCard(card){
     return schema.validate(card);
 };
 
+function validateCollection(collection){
+    const schema = Joi.object({
+        title: Joi.string().min(2).max(30).required()
+    })
+
+    return schema.validate(collection);
+}
+
 
 exports.CardCollection = CardCollection;
 exports.Card = Card;
-exports.validate = validateCard;
+exports.validateCard = validateCard;
+exports.validateCollection = validateCollection;
 exports.cardSchema = cardSchema;
