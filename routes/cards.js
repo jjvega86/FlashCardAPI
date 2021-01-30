@@ -1,4 +1,4 @@
-const Card = require('../models/card');
+const {Card, validate} = require('../models/card');
 const express = require('express');
 const router = express.Router();
 
@@ -6,6 +6,11 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     try{
+
+        const {error} = validate(req.body);
+        if(error)
+            return res.status(400).send(error);
+
         const card = new Card ({
             title: req.body.title,
             description: req.body.description
