@@ -1,4 +1,4 @@
-const {Card, validate} = require('../models/card');
+const {Card, CardCollection, validate} = require('../models/cardCollection');
 const express = require('express');
 const router = express.Router();
 
@@ -6,8 +6,9 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try{
-        const cards = await Card.find();
-        return res.send(cards);
+        const collections = await CardCollection.find();
+        //const cards = await Card.find();
+        return res.send(collections);
     } catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }

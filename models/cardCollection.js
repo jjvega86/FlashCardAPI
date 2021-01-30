@@ -1,14 +1,23 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
+// cardSchema defines an individual Flashcard in the collection
 const cardSchema = new mongoose.Schema({
-    title: { type: String, required: true, minlength: 2, maxLength: 30},
+    title: { type: String, required: true, minlength: 2, maxLength: 30}, 
     description: { type: String, required: true, minlength: 2, maxLength: 500},
     dateAdded: {type: Date, default: Date.now },
     dateLastModified: {type: Date, default: Date.now}
 });
 
+// cardCollectionSchema defines a collection of FlashCards differentiated by title
+
+const cardCollectionSchema = new mongoose.Schema({
+    title: {type: String, required: true, minlength: 2, maxLength: 30 },
+    cards: [cardSchema] // allows for an array of cards in each collection
+});
+
 const Card = mongoose.model('Card', cardSchema);
+const CardCollection = mongoose.model('Collection', cardCollectionSchema);
 
 function validateCard(card){
     const schema = Joi.object({
@@ -17,9 +26,10 @@ function validateCard(card){
     });
 
     return schema.validate(card);
-}
+};
 
 
+exports.CardCollection = CardCollection;
 exports.Card = Card;
 exports.validate = validateCard;
 exports.cardSchema = cardSchema;
