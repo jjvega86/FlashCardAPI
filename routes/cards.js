@@ -57,16 +57,17 @@ router.put('/:id', async (req,res) => {
             req.params.id,
             {
                 title: req.body.title,
-                description: req.body.description
+                description: req.body.description,
+                dateLastModified: Date.now()
             },
             {new: true}
         );
 
-        if (!product)
-            return res.status(400).send(`The product with id ${req.params.id} does not exist`);
+        if (!card)
+            return res.status(400).send(`The card with id ${req.params.id} does not exist`);
 
         await card.save();
-        return res.send(product);
+        return res.send(card);
     } catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
