@@ -48,4 +48,29 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.put('/:id', async (req,res) => {
+    try {
+        const {error} = validate(req.body);
+        if (error) return res.status(400).send(error);
+
+        const card = await Card.findByIdAndUpdate(
+            req.params.id,
+            {
+                title: req.body.title,
+                description: req.body.description
+            },
+            {new: true}
+        );
+
+        if (!product)
+            return res.status(400).send(`The product with id ${req.params.id} does not exist`);
+
+        await card.save();
+        return res.send(product);
+    } catch(ex){
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+
+});
+
 module.exports = router;
