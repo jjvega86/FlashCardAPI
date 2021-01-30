@@ -1,7 +1,7 @@
 const {Card, CardCollection, validateCard, validateCollection} = require('../models/cardCollection');
 const express = require('express');
-const { Collection } = require('mongoose');
 const router = express.Router();
+
 
 // All endpoints and route handlers go here
 // routes act on collections of cards. Using subdocuments to store cards in collection documents. Each collection is a different technology (i.e. JavaScript)
@@ -12,6 +12,12 @@ const router = express.Router();
 // ex. router.get('/collectionId/:id') to access a collection, then a card in that collection
 // 2 cont. Endpoints to add
 // 2a - GET all cards in collection
+// 2b - GET one card from collection by id
+// 2c - POST one card to collection
+// 2d - PUT one card in collection
+// 2e - DELETE one card from collection
+// 3 - Test all endpoints in Postman
+// 4 - Consider refactoring to have two separate Card and CardCollection files for both models and routes
 
 // RESOURCES
 // https://zellwk.com/blog/mongoose-subdocuments/
