@@ -20,6 +20,6 @@ function validateCard(card){
 }
 
 
-module.exports.Card = Card;
-module.exports.validate = validateCard;
-module.exports.cardSchema = cardSchema;
+exports.Card = Card;
+exports.validate = validateCard;
+exports.cardSchema = cardSchema;
