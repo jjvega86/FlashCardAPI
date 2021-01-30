@@ -4,7 +4,7 @@ const {cardSchema} = require('./card');
 
 const userSchema = new mongoose.Schema({
     name: {type: String, require: true},
-    collection: {type: [cardSchema], default: []} 
+    cardCollection: {type: [cardSchema], default: []} 
 });
 
 const User = mongoose.model('User', userSchema);
