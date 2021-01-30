@@ -74,4 +74,18 @@ router.put('/:id', async (req,res) => {
 
 });
 
+router.delete('/:id', async (req, res) => {
+    try{
+        const card = await Card.findByIdAndDelete(req.params.id);
+
+        if(!card)
+            return res.status(400).send(`The product with id ${req.params.id} does not exist.`);
+        
+        return res.send(card);
+    } catch (ex) {
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+
+});
+
 module.exports = router;
