@@ -1,7 +1,7 @@
 const connectDB = require('./startup/db');
 const express = require('express');
 const app = express();
-const collections = require('./routes/collections');
+const collections = require('./routes/cardCollections');
 
 connectDB();
 
