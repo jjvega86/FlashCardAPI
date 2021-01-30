@@ -14,8 +14,9 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
+    console.log(req.params.id);
     try{
-        const card = Card.findById(req.params.id);
+        const card = await Card.findById(req.params.id);
 
         if(!card)
             return res.status(400).send(`The product with id ${req.params.id} does not exist`);
