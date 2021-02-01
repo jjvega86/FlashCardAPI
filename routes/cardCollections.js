@@ -15,9 +15,12 @@ const router = express.Router();
 // DONE 3a - GET all cards in collection
 // DONE 3b - GET one card from collection by id
 // DONE 3c - POST one card to collection
-// 3d - PUT one card in collection
+// DONE 3d - PUT one card in collection
 // 3e - DELETE one card from collection
 // 4 - Test all endpoints in Postman
+// 5 - clean up all references to collection (cardCollection)
+// 6 - clean up code for readability
+// 7 - Read up on Express documentation (app.use and how it works)
 
 // RESOURCES
 // https://zellwk.com/blog/mongoose-subdocuments/
@@ -44,25 +47,24 @@ router.get('/collections/:id', async (req,res) => { // GET all cards in a single
     }
 })
 
-router.get('/collections/:collectionId', async (req, res) => { // GET an individual collection
-    console.log(req.params.id);
+router.get('/collections/:cardCollectionId', async (req, res) => { // GET an individual collection
+    console.log(req.params.cardCollectionId);
     try{
-        const cardCollection = await CardCollection.findById(req.params.collectionId);
-
-        if(!cardCollection)
-            return res.status(400).send(`The collection with id ${req.params.id} does not exist`);
+        const cardCollection = await CardCollection.findById(req.params.cardCollectionId);
+        if(!cardCollection) return res.status(400).send(`The collection with id ${req.params.cardCollectionId} does not exist`);
 
         return res.send(cardCollection);
+
     } catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`)
     }
 
 });
 
-router.get('/collections/:collectionId/cards/:cardId', async (req,res) => { // get a single card from a collection
+router.get('/collections/:cardCollectionId/cards/:cardId', async (req,res) => { // get a single card from a collection
     try{
-        const cardCollection = await CardCollection.findById(req.params.collectionId);
-        if(!cardCollection) return res.status(400).send(`The collection with id ${req.params.collectionId} does not exist! `);
+        const cardCollection = await CardCollection.findById(req.params.cardCollectionId);
+        if(!cardCollection) return res.status(400).send(`The collection with id ${req.params.cardCollectionId} does not exist! `);
 
         const card = cardCollection.cards.find(e => e.id == req.params.cardId);
         if(!card) return res.status(400).send(`The card with id ${req.params.cardId} does not exist! `);
@@ -121,7 +123,7 @@ router.post('/collections/:id', async (req,res) => { // adds a new card to an ex
     }
 })
 
-router.put('/collections/:id', async (req,res) => { // allows name change of card collection - does NOT modify cards. /cardCollectionId/:id would change a card
+router.put('/collections/:id', async (req,res) => { // allows name change of card collection - does NOT modify cards. 
     try {
         const {error} = validateCollection(req.body);
         if (error) return res.status(400).send(error);
@@ -145,6 +147,29 @@ router.put('/collections/:id', async (req,res) => { // allows name change of car
     }
 
 });
+
+router.put('/collections/:cardCollectionId/cards/:cardId', async (req,res) => { // Edit a SINGLE card in a collection
+    try{
+        const {error} = validateCard(req.body);
+        if(error) return res.status(400).send(error);
+
+        const cardCollection = await CardCollection.findById(req.params.cardCollectionId);
+        if(!cardCollection) return res.status(400).send(`The collection with id ${req.params.cardCollectionId} does not exist`);
+
+        const card = await cardCollection.cards.id(req.params.cardId);
+        if(!card) return res.status(400).send(`The card with id ${req.params.cardId} does not exist!`);
+
+        card.title = req.body.title;
+        card.description = req.body.description;
+
+        await cardCollection.save();
+        return res.send(card);
+
+    } catch(ex){
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+
+})
 
 router.delete('collections/:id', async (req, res) => { // deletes the entire collection.
     try{
