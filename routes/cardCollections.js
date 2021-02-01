@@ -7,7 +7,7 @@ const router = express.Router();
 // routes act on collections of cards. Using subdocuments to store cards in collection documents. Each collection is a different technology (i.e. JavaScript)
 
 // TO DO
-// 1 - Modify all current endpoints to act on the collection level DONE
+// DONE 1 - Modify all current endpoints to act on the collection level DONE
 // 2 - Add endpoints to modify cards in each collection (by passing in an additional param to the URL)
 // ex. router.get('/collectionId/:id') to access a collection, then a card in that collection
 // 2 cont. Endpoints to add
@@ -35,12 +35,12 @@ router.get('/', async (req, res) => { // GET all collections of cards (would ret
 router.get('/:id', async (req, res) => { // GET an individual collection
     console.log(req.params.id);
     try{
-        const cardCollections = await CardCollection.findById(req.params.id);
+        const cardCollection = await CardCollection.findById(req.params.id);
 
-        if(!card)
+        if(!cardCollection)
             return res.status(400).send(`The product with id ${req.params.id} does not exist`);
 
-        return res.send(cardCollections);
+        return res.send(cardCollection);
     } catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`)
     }
@@ -68,7 +68,7 @@ router.post('/', async (req, res) => { // create a new collection
 
 router.put('/:id', async (req,res) => { // allows name change of card collection - does NOT modify cards. /cardCollectionId/:id would change a card
     try {
-        const {error} = validate(req.body);
+        const {error} = validateCollection(req.body);
         if (error) return res.status(400).send(error);
 
         const cardCollection = await CardCollection.findByIdAndUpdate(
@@ -83,7 +83,7 @@ router.put('/:id', async (req,res) => { // allows name change of card collection
         if (!cardCollection)
             return res.status(400).send(`The collection with id ${req.params.id} does not exist`);
 
-        await card.save();
+        await cardCollection.save();
         return res.send(cardCollection);
     } catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
