@@ -12,10 +12,9 @@ const router = express.Router();
 // DONE 2 - Consider refactoring to have two separate Card and CardCollection files for both models and routes
 // 3 - Add endpoints to modify cards in each collection (by passing in an additional param to the URL)
 // ex. router.get('/collectionId/:id') to access a collection, then a card in that collection
-// 3 cont. Endpoints to add
-// 3a - GET all cards in collection
-// 3b - GET one card from collection by id
-// 3c - POST one card to collection
+// DONE 3a - GET all cards in collection
+// DONE 3b - GET one card from collection by id
+// DONE 3c - POST one card to collection
 // 3d - PUT one card in collection
 // 3e - DELETE one card from collection
 // 4 - Test all endpoints in Postman
@@ -34,13 +33,24 @@ router.get('/collections', async (req, res) => { // GET all collections of cards
     }
 });
 
-router.get('/collections/:id', async (req, res) => { // GET an individual collection
-    console.log(req.params.id);
+router.get('/collections/:id', async (req,res) => { // GET all cards in a single collection
     try{
         const cardCollection = await CardCollection.findById(req.params.id);
+        if(!cardCollection) return res.status(500).send(`The collection with id ${req.params.id} does not exist!`);
+
+        return res.send(cardCollection.cards);
+    }catch(ex){
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+})
+
+router.get('/collections/:collectionId', async (req, res) => { // GET an individual collection
+    console.log(req.params.id);
+    try{
+        const cardCollection = await CardCollection.findById(req.params.collectionId);
 
         if(!cardCollection)
-            return res.status(400).send(`The product with id ${req.params.id} does not exist`);
+            return res.status(400).send(`The collection with id ${req.params.id} does not exist`);
 
         return res.send(cardCollection);
     } catch(ex){
@@ -48,6 +58,21 @@ router.get('/collections/:id', async (req, res) => { // GET an individual collec
     }
 
 });
+
+router.get('/collections/:collectionId/cards/:cardId', async (req,res) => { // get a single card from a collection
+    try{
+        const cardCollection = await CardCollection.findById(req.params.collectionId);
+        if(!cardCollection) return res.status(400).send(`The collection with id ${req.params.collectionId} does not exist! `);
+
+        const card = cardCollection.cards.find(e => e.id == req.params.cardId);
+        if(!card) return res.status(400).send(`The card with id ${req.params.cardId} does not exist! `);
+        
+        return res.send(card);
+
+    } catch(ex){
+        return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+})
 
 router.post('/collections', async (req, res) => { // create a new collection
     try{
@@ -90,7 +115,7 @@ router.post('/collections/:id', async (req,res) => { // adds a new card to an ex
         await cardCollection.save();
 
         return res.send(cardCollection.cards);
-        
+
     }catch(ex){
         return res.status(500).send(`Internal Server Error: ${ex}`);
     }
