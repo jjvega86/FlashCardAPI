@@ -6,7 +6,7 @@ const collections = require('./routes/cardCollections');
 connectDB();
 
 app.use(express.json());
-app.use('/api/Flashcards/collections', collections);
+app.use('/api/Flashcards/', collections);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
