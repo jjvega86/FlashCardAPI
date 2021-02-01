@@ -18,9 +18,9 @@ const router = express.Router();
 // DONE 3b - GET one card from collection by id
 // DONE 3c - POST one card to collection
 // DONE 3d - PUT one card in collection
-// 3e - DELETE one card from collection
-// 4 - Test all endpoints in Postman
-// 5 - clean up all references to collection (cardCollection)
+// DONE 3e - DELETE one card from collection
+// DONE 4 - Test all endpoints in Postman
+// DONE 5 - clean up all references to collection (cardCollection)
 // 6 - clean up code for readability
 // 7 - Read up on Express documentation (app.use and how it works)
 
@@ -145,14 +145,14 @@ router.post("/collections/:id", async (req, res) => {
   }
 });
 
-router.put("/collections/:id", async (req, res) => {
+router.put("/collections/:cardCollectionId", async (req, res) => {
   // allows name change of card collection - does NOT modify cards.
   try {
     const { error } = validateCollection(req.body);
     if (error) return res.status(400).send(error);
 
     const cardCollection = await CardCollection.findByIdAndUpdate(
-      req.params.id,
+      req.params.cardCollectionId,
       {
         title: req.body.title,
         dateLastModified: Date.now(),
@@ -163,7 +163,7 @@ router.put("/collections/:id", async (req, res) => {
     if (!cardCollection)
       return res
         .status(400)
-        .send(`The collection with id ${req.params.id} does not exist`);
+        .send(`The collection with id ${req.params.cardCollectionId} does not exist`);
 
     await cardCollection.save();
     return res.send(cardCollection);
@@ -204,17 +204,17 @@ router.put("/collections/:cardCollectionId/cards/:cardId", async (req, res) => {
   }
 });
 
-router.delete("collections/:id", async (req, res) => {
+router.delete("collections/:cardCollectionId", async (req, res) => {
   // deletes the entire collection.
   try {
     const cardCollection = await CardCollection.findByIdAndDelete(
-      req.params.id
+      req.params.cardCollectionId
     );
 
     if (!cardCollection)
       return res
         .status(400)
-        .send(`The collection with id ${req.params.id} does not exist.`);
+        .send(`The collection with id ${req.params.cardCollectionId} does not exist.`);
 
     return res.send(cardCollection);
   } catch (ex) {
@@ -223,7 +223,7 @@ router.delete("collections/:id", async (req, res) => {
 });
 
 router.delete(
-  "collections/:cardCollectionId/cards/:cardId",
+  "/collections/:cardCollectionId/cards/:cardId",
   async (req, res) => {
     try {
       const cardCollection = await CardCollection.findById(
@@ -234,11 +234,14 @@ router.delete(
           .status(400)
           .send(`The collection with id ${req.params.id} does not exist.`);
 
-      const card = await cardCollection.findByIdAndDelete(req.params.cardId);
+      let card = await cardCollection.cards.id(req.params.cardId);
       if (!card)
         return res
           .status(400)
           .send(`The card with id ${req.params.cardId} does not exist!`);
+
+      card = await card.remove();
+      await cardCollection.save();
 
       return res.send(card);
     } catch (ex) {
