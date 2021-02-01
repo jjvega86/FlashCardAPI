@@ -222,4 +222,29 @@ router.delete("collections/:id", async (req, res) => {
   }
 });
 
+router.delete(
+  "collections/:cardCollectionId/cards/:cardId",
+  async (req, res) => {
+    try {
+      const cardCollection = await CardCollection.findById(
+        req.params.cardCollectionId
+      );
+      if (!cardCollection)
+        return res
+          .status(400)
+          .send(`The collection with id ${req.params.id} does not exist.`);
+
+      const card = await cardCollection.findByIdAndDelete(req.params.cardId);
+      if (!card)
+        return res
+          .status(400)
+          .send(`The card with id ${req.params.cardId} does not exist!`);
+
+      return res.send(card);
+    } catch (ex) {
+      return res.status(500).send(`Internal Server Error: ${ex}`);
+    }
+  }
+);
+
 module.exports = router;
